@@ -17,8 +17,8 @@ let negamaxConfig = {
 
 const negamax = new NegamaxAlphaBeta(negamaxConfig);
 
-function play(filename = "best_net.json") {
-  const saved = JSON.parse(fs.readFileSync(resolve("winning_nets", filename), "utf8"));
+function play(filename = "best_net") {
+  const saved = JSON.parse(fs.readFileSync(resolve("winning_nets", `${filename}.json`), "utf8"));
   const net1 = Network.fromJSON(saved);
   const net2 = Network.fromJSON(saved);
   const game = new Game(net1, net2);
