@@ -3,6 +3,14 @@ const CAT = "cat";
 const DELIMITER = "*-----------------*";
 const MAX_TURNS = 75;
 
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
 export class Game {
   constructor(net1, net2) {
     this.history = [new GameState(this)],
@@ -34,7 +42,6 @@ export class Game {
       console.log(`Player 1 has: ${gameState.pools[0][KITTEN]} kittens & ${gameState.pools[0][CAT]} cats in their pool`);
       console.log(`Player 2 has: ${gameState.pools[1][KITTEN]} kittens & ${gameState.pools[1][CAT]} cats in their pool`);
       gameState.board.peek();
-      console.log(`Heuristic: ${gameState.board.score()}`);
       console.log(`${gameState.availableMoves().length} Moves available`)
     }
     console.log(DELIMITER);
@@ -147,7 +154,7 @@ export class GameState {
         }
       }
     }
-    return moves;
+    return shuffle(moves);
   }
 
   encodeAsVec() {
@@ -296,9 +303,30 @@ export class Board {
   }
 
   peek() {
+    // player 1: 🐈, 🐱
+    // player 2: 🐓, 🐣
+    let top = true;
     for (let row of this.board) {
-      console.log(row.map(cell => cell ? ["k", "c"][cell.rank][cell.owner ? "toLowerCase" : "toUpperCase"]() : "_").join(","));
+      const beautified = row.map(cell => {
+        if (!cell) return "　";
+        else if (!cell.owner) {
+          return cell.rank ? "🐈" : "🐱";
+        }
+        else {
+          return cell.rank ? "🐓" : "🐣";
+        }
+      }).join("│");
+
+      if (top) {
+        console.log("┌－┬－┬－┬－┬－┬－┐")
+        top = false;
+      }
+      else {
+        console.log("├－+－+－+－+－+－┤")
+      }
+      console.log("|" + beautified + "|");
     }
+    console.log("└－┴－┴－┴－┴－┴－┘");
   }
 }
 

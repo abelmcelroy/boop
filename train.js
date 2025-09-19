@@ -3,10 +3,11 @@ const { Neat, methods } = require("neataptic");
 const { Game } = require("./boop.js");
 const cliProgress = require("cli-progress");
 const fs = require("fs");
+const { resolve } = require("path");
 
-const GENERATIONS = 2;
-const SEARCH_DEPTH = 3;
-const POPULATION_SIZE = 10;
+const GENERATIONS = 3;
+const SEARCH_DEPTH = 4;
+const POPULATION_SIZE = 15;
 
 const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 bar.start(POPULATION_SIZE * (POPULATION_SIZE-1) * GENERATIONS, 0);
@@ -81,7 +82,7 @@ function train(neat) {
 
   const best = neat.getFittest();
   const json = best.toJSON();
-  fs.writeFileSync("best_net.json", JSON.stringify(json));
+  fs.writeFileSync(resolve("winning_nets","best_net.json"), JSON.stringify(json));
   console.log(`Best net saved! Score: ${best.score}`);
 }
 
