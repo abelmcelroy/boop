@@ -1,14 +1,9 @@
 {
   "name": "boop",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
+  "author": "Abel McElroy",
   "license": "ISC",
-  "description": "",
+  "description": "A self learning NEAT that plays the board game boop",
   "dependencies": {
     "cli-progress": "^3.12.0",
     "neataptic": "^1.4.7",
