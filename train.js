@@ -5,9 +5,9 @@ const cliProgress = require("cli-progress");
 const fs = require("fs");
 const { resolve } = require("path");
 
-const GENERATIONS = 3;
+const GENERATIONS = 5;
 const SEARCH_DEPTH = 4;
-const POPULATION_SIZE = 15;
+const POPULATION_SIZE = 20;
 
 const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 bar.start(POPULATION_SIZE * (POPULATION_SIZE-1) * GENERATIONS, 0);
@@ -74,7 +74,7 @@ function train(neat) {
     }
 
     neat.sort();
-    
+
     if (g < GENERATIONS - 1) {
       neat.evolve();
     }
@@ -82,7 +82,7 @@ function train(neat) {
 
   const best = neat.getFittest();
   const json = best.toJSON();
-  fs.writeFileSync(resolve("winning_nets","best_net.json"), JSON.stringify(json));
+  fs.writeFileSync(resolve("winning_nets", "best_net.json"), JSON.stringify(json));
   console.log(`Best net saved! Score: ${best.score}`);
 }
 

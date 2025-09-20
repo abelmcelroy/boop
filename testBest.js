@@ -5,7 +5,7 @@ const fs = require("fs");
 const { resolve } = require("path");
 
 const SEARCH_DEPTH = 3;
-const filename = "next_gen_shit"
+const FILENAME = "best_net_so_far";
 
 let negamaxConfig = {
   generateMoves: (game) => game.current.availableMoves(),
@@ -29,5 +29,5 @@ function play(filename = "best_net") {
   return game;
 }
 
-const finishedGame = play(filename);
+const finishedGame = play(FILENAME);
 finishedGame.peekHistory();

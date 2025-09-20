@@ -216,16 +216,22 @@ export class Board {
     return this.allPiecesFor(player).filter(piece => piece.rank === 0);
   }
 
+  set(x, y, piece = null) {
+    if (!!piece === !!this.board[y][x]) throw new Error(`Cannot ${!piece ? "remove" : "place"} piece ${!piece ? "from" : "in"} ${!piece ? "empty" : "occupied"} cell`);
+    this.board[y][x] = piece;
+    piece?.position
+  }
+
   move(xFrom, yFrom, xTo, yTo) {
-    this.board[yTo][xTo] = this.board[yFrom][xFrom];
-    this.board[yFrom][xFrom] = null;
+    this.set(xTo, yTo, this.board[yFrom][xFrom]);
+    this.set(xFrom, yFrom);
   }
 
   remove(x, y) {
     const removed = this.atPosition(x, y);
     if (removed) {
       this.gameState.pools[removed.owner][removed.type]++;
-      this.board[y][x] = null;
+      this.set(x, y);
     }
   }
 
@@ -277,7 +283,7 @@ export class Board {
     if (!this.isEmpty(x, y)) throw new Error(`Illegal Move to ${x},${y}`);
     const piece = new Piece(turn%2, type, this);
     this.gameState.pools[turn%2][type]--;
-    this.board[y][x] = piece;
+    this.set(x, y, piece);
     piece.pushNeighbors();
   }
 
@@ -374,20 +380,21 @@ export class Piece {
     if (this.board.isEmpty(x, y) && x >= 0 && x < 6 && y >= 0 && y < 6) {
       const [currX, currY] = this.position;
       this.board.move(currX, currY, x, y);
+      this.position
     }
   }
 
   findLine(xInc, yInc) {
-    const line = [this];
-    let xDiff = this.position[0] + xInc;
-    let yDiff = this.position[1] + yInc;
-    const nextInLine = () => this.board.atPosition(xDiff, yDiff);
-    while (nextInLine()?.owner === this.owner && line.length < 3) {
-      line.push(nextInLine())
-      xDiff += xInc;
-      yDiff += yInc;
+    let nextX = this.position[0] + xInc;
+    let nextY = this.position[1] + yInc;
+    let nextNextX = nextX + xInc;
+    let nextNextY = nextY + yInc;
+    const next = this.board.atPosition(nextX, nextY);
+    const nextNext = this.board.atPosition(nextNextX, nextNextY);
+    if (this.owner === next?.owner && this.owner === nextNext?.owner) {
+      return [this, next, nextNext];
     }
-    return line.length === 3 ? line : null
+    else return null;
   }
 
   neighbors() {
